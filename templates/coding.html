@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Coding{% endblock %}
+{% block content %}
+<div class="coding-head">
+<div>
+<span class="eyebrow">Round {{ event.round_no }}</span>
+<h1>{{ question.title }}</h1>
+<p>{{ question.description }}</p>
+</div>
+<div class="timer">
+<small>Elapsed</small>
+<strong id="timer">00:00</strong>
+</div>
+</div>
+
+<section class="card">
+<div class="notice">
+Use VS Code to write and test your solution. Paste only your final code below.
+This website does not execute submitted code.
+</div>
+
+<form method="post" action="{{ url_for('submit') }}"
+      id="submission-form"
+      onsubmit="return confirmSubmit()">
+
+<input type="hidden" name="question_id" value="{{ question.id }}">
+<input type="hidden" name="elapsed_seconds" id="elapsed" value="0">
+
+<label>Member submitting</label>
+<select name="member">
+<option value="{{ session.member1 }}">{{ session.member1 }}</option>
+<option value="{{ session.member2 }}">{{ session.member2 }}</option>
+</select>
+
+<label>Final code</label>
+<textarea class="code" name="code"
+placeholder="// Paste code from VS Code here"
+required></textarea>
+
+<button class="primary large" type="submit">Submit Code</button>
+</form>
+</section>
+
+<script>
+const start = Date.now();
+
+setInterval(() => {
+    const seconds = Math.floor((Date.now() - start) / 1000);
+
+    document.getElementById("elapsed").value = seconds;
+
+    const minutes = Math.floor(seconds / 60);
+    const remaining = seconds % 60;
+
+    document.getElementById("timer").textContent =
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(remaining).padStart(2, "0");
+}, 1000);
+
+function confirmSubmit() {
+    return confirm(
+        "Are you sure you want to submit your final code?"
+    );
+}
+</script>
+{% endblock %}
